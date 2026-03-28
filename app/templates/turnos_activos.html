@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block body_class %}dashboard-container{% endblock %}
+
+{% block content %}
+<div class="background-overlay"></div>
+<section class="ep-shell mobile-shell mobile-dashboard">
+    <div class="dashboard-layout" id="dashboardLayout">
+        <aside class="dashboard-sidebar" id="dashboardSidebar">
+            {% include "partials/sidebar_nav.html" %}
+        </aside>
+
+        <div class="mobile-card-stack dashboard-main">
+            <header class="dashboard-topbar">
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Mostrar u ocultar menú lateral"
+                    aria-controls="dashboardSidebar"
+                    aria-expanded="true"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <a class="btn btn-secondary topbar-logout" href="/logout">Cerrar sesión</a>
+            </header>
+
+            <article class="content-card dashboard-content-card">
+                <div class="dashboard-card-header">
+                    <div>
+                        <h1 class="page-title">Turnos abiertos</h1>
+                        <p class="page-copy">Consulta de turnos con estado activo.</p>
+                    </div>
+                    <span class="cars-count">{{ turnos|length }} activos</span>
+                </div>
+
+                {% if turnos %}
+                    <div class="list-cards autos-scroll-shell">
+                        {% for turno in turnos %}
+                            {% set resumen = mensajes_por_turno.get(turno.id, {'total': 0, 'pendientes': 0}) %}
+                            <article class="auto-card">
+                                <span class="ep-badge ep-badge-blue">Turno activo</span>
+                                <h3 class="plate plate-dashboard">Turno #{{ turno.id }}</h3>
+                                <p class="auto-meta"><strong>Encargado:</strong> {{ turno.encargado_id }}</p>
+                                <p class="auto-meta"><strong>Fecha inicio:</strong> {{ turno.fecha }}</p>
+                                <p class="auto-meta"><strong>Hora inicio:</strong> {{ turno.hora_inicio }}</p>
+                                <a href="/mensajes/nuevo?turno_id={{ turno.id }}" class="btn btn-primary" style="margin-top: 0.75rem; display: block; text-align: center;">Enviar un mensaje</a>
+                                <a href="/mensajes/historial?turno_id={{ turno.id }}" class="btn btn-secondary" style="margin-top: 0.5rem; display: block; text-align: center;">Ver historial de mensajes</a>
+                                <p class="auto-meta" style="margin-top: 0.65rem;"><strong>Mensajes:</strong> {{ resumen.total }} total | {{ resumen.pendientes }} pendientes</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <article class="info-box info-box-dashboard-empty">
+                        <p class="page-copy">No hay turnos activos en este momento.</p>
+                    </article>
+                {% endif %}
+            </article>
+        </div>
+    </div>
+</section>
+
+{% include "partials/sidebar_toggle_script.html" %}
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block body_class %}estacionados-page{% endblock %}
+
+{% block content %}
+<div class="background-overlay"></div>
+<section class="ep-shell mobile-shell">
+  <div class="mobile-card-stack public-status-stack">
+    <article class="page-header public-header">
+      <h1 class="page-title">Estado actual del vehiculo</h1>
+      <p class="page-copy">Consulta publica por placa.</p>
+    </article>
+
+    <article class="content-card public-status-card">
+      <p class="subtitle">Placa consultada: <strong class="plate">{{ placa_buscada }}</strong></p>
+
+      {% if registro %}
+        <p class="public-state public-state-ok">El vehiculo se encuentra actualmente en el estacionamiento.</p>
+        <div class="public-plate-highlight plate">{{ registro.placa }}</div>
+
+        <article class="info-card public-total-card" aria-label="Importe estimado actual">
+          <p class="page-copy">Importe estimado hasta ahora</p>
+          <p class="public-total-amount">$ {{ '%.2f'|format(monto_estimado) if monto_estimado is not none else '-' }} MXN</p>
+          <p class="public-total-minutes">Tiempo transcurrido: {{ minutos_transcurridos if minutos_transcurridos is not none else '-' }} min</p>
+        </article>
+
+        <section class="public-tarifas-grid" aria-label="Tarifas aplicadas">
+          <article class="info-card tarifa-detail-item public-tarifa-item">
+            <p class="page-copy">Media hora</p>
+            <strong>${{ tarifa.fraccion if tarifa else '-' }}</strong>
+          </article>
+          <article class="info-card tarifa-detail-item public-tarifa-item">
+            <p class="page-copy">Hora</p>
+            <strong>${{ tarifa.hora if tarifa else '-' }}</strong>
+          </article>
+          <article class="info-card tarifa-detail-item public-tarifa-item">
+            <p class="page-copy">Medio dia</p>
+            <strong>${{ tarifa.medio_dia if tarifa else '-' }}</strong>
+          </article>
+          <article class="info-card tarifa-detail-item public-tarifa-item">
+            <p class="page-copy">Dia</p>
+            <strong>${{ tarifa.diario if tarifa else '-' }}</strong>
+          </article>
+        </section>
+
+        <section class="tarifa-detail-grid public-grid" aria-label="Detalle de tiempos">
+          <article class="info-card tarifa-detail-item">
+            <p class="page-copy">Fecha de entrada</p>
+            <strong>{{ registro.fecha_entrada }}</strong>
+          </article>
+          <article class="info-card tarifa-detail-item">
+            <p class="page-copy">Hora de entrada</p>
+            <strong>{{ registro.hora_entrada }}</strong>
+          </article>
+        </section>
+      {% else %}
+        <article class="info-box public-empty-box">
+          <p class="public-state public-state-warn">No hay registro activo para esta placa en este momento.</p>
+        </article>
+      {% endif %}
+    </article>
+  </div>
+</section>
+
+<style>
+  .public-status-stack {
+    width: min(100%, 560px);
+  }
+
+  .public-header,
+  .public-status-card {
+    border-radius: var(--ep-radius-lg);
+  }
+
+  .public-status-card {
+    display: grid;
+    gap: 14px;
+  }
+
+  .public-state {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .public-state-ok {
+    color: #bbf7d0;
+  }
+
+  .public-state-warn {
+    color: #fecaca;
+  }
+
+  .public-plate-highlight {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: -2px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: #dbeafe;
+    background: rgba(37, 99, 235, 0.26);
+    border: 1px solid rgba(147, 197, 253, 0.4);
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    box-shadow: var(--ep-shadow-sm);
+    overflow-wrap: anywhere;
+  }
+
+  .public-tarifas-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .public-total-card {
+    padding: 12px;
+    border-left: 4px solid rgba(251, 191, 36, 0.85);
+    background: rgba(30, 64, 175, 0.22);
+  }
+
+  .public-total-amount {
+    margin: 6px 0 2px;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: #fef3c7;
+    letter-spacing: 0.3px;
+  }
+
+  .public-total-minutes {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.9rem;
+  }
+
+  .public-tarifa-item {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .public-tarifa-item .page-copy {
+    font-size: 0.78rem;
+  }
+
+  .public-tarifa-item strong {
+    font-size: 1rem;
+    line-height: 1.1;
+  }
+
+  .public-grid .info-card {
+    color: var(--ep-white);
+  }
+
+  .public-grid .tarifa-detail-item strong {
+    font-size: 1.05rem;
+    color: #f8fafc;
+  }
+
+  .public-grid-full {
+    grid-column: 1 / -1;
+  }
+
+  .public-empty-box {
+    margin-top: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .public-status-stack {
+      width: 100%;
+    }
+
+    .public-status-card {
+      gap: 12px;
+    }
+
+    .public-plate-highlight {
+      width: 100%;
+      justify-content: center;
+      font-size: 1.35rem;
+      letter-spacing: 1.8px;
+    }
+
+    .public-tarifas-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .public-total-amount {
+      font-size: 1.45rem;
+    }
+  }
+</style>
+{% endblock %}

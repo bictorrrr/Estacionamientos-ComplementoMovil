@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block body_class %}dashboard-container{% endblock %}
+
+{% block content %}
+<div class="background-overlay"></div>
+<section class="ep-shell mobile-shell mobile-dashboard">
+    <div class="dashboard-layout" id="dashboardLayout">
+        <aside class="dashboard-sidebar" id="dashboardSidebar">
+            {% include "partials/sidebar_nav.html" %}
+        </aside>
+
+        <div class="mobile-card-stack dashboard-main">
+            <header class="dashboard-topbar">
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Mostrar u ocultar menú lateral"
+                    aria-controls="dashboardSidebar"
+                    aria-expanded="true"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <a class="btn btn-secondary topbar-logout" href="/logout">Cerrar sesión</a>
+            </header>
+
+            <article class="content-card dashboard-content-card">
+                <div class="dashboard-card-header">
+                    <div>
+                        <h1 class="page-title">Tarifa actual default</h1>
+                        <p class="page-copy">Consulta de la tarifa por defecto activa en base de datos.</p>
+                    </div>
+                    {% if tarifa %}
+                        <span class="ep-badge ep-badge-success">Tarifa activa</span>
+                    {% else %}
+                        <span class="ep-badge ep-badge-amber">Sin tarifa default</span>
+                    {% endif %}
+                </div>
+
+                {% if tarifa %}
+                    <div class="tarifa-detail-grid">
+                        <article class="info-box tarifa-detail-item">
+                            <p class="page-copy"><strong>ID:</strong> {{ tarifa.id }}</p>
+                            <p class="page-copy"><strong>Número:</strong> {{ tarifa.numero }}</p>
+                            <p class="page-copy"><strong>Tipo de vehículo:</strong> {{ tarifa.tipo_vehiculo }}</p>
+                            <p class="page-copy"><strong>Default:</strong> {{ tarifa.default }}</p>
+                        </article>
+                        <article class="info-box tarifa-detail-item">
+                            <p class="page-copy"><strong>Hora:</strong> {{ tarifa.hora }}</p>
+                            <p class="page-copy"><strong>Fracción:</strong> {{ tarifa.fraccion }}</p>
+                            <p class="page-copy"><strong>Medio día:</strong> {{ tarifa.medio_dia }}</p>
+                            <p class="page-copy"><strong>Diario:</strong> {{ tarifa.diario }}</p>
+                        </article>
+                    </div>
+
+                    <article class="info-box" style="margin-top: 2px;">
+                        <p class="page-copy"><strong>Observaciones:</strong> {{ tarifa.observaciones or 'Sin observaciones' }}</p>
+                        <p class="page-copy" style="margin-top: 6px;"><strong>Eliminado:</strong> {{ tarifa.eliminado }}</p>
+                    </article>
+                {% else %}
+                    <article class="info-box" style="margin-top: 12px;">
+                        <p class="page-copy">No se encontró una tarifa con default = 1 y eliminado = 0.</p>
+                    </article>
+                {% endif %}
+            </article>
+        </div>
+    </div>
+</section>
+
+{% include "partials/sidebar_toggle_script.html" %}
+{% endblock %}

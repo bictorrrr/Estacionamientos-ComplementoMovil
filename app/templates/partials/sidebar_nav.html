@@ -1,0 +1,13 @@
+<div class="sidebar-header">
+    <div class="sidebar-header-row">
+        <h2 class="page-title">Complemento móvil</h2>
+        <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Cerrar menú lateral">&#10005;</button>
+    </div>
+    <p class="page-copy">Navegación de vistas</p>
+</div>
+<nav class="sidebar-nav" aria-label="Vistas del sistema">
+    <a href="/dashboard" class="sidebar-link{% if active_view == 'dashboard' %} sidebar-link-active{% endif %}">Dashboard principal</a>
+    <a href="/tarifas/default" class="sidebar-link{% if active_view == 'tarifas-default' %} sidebar-link-active{% endif %}">Tarifa actual default</a>
+    <a href="/turnos/abiertos" class="sidebar-link{% if active_view == 'turnos-abiertos' %} sidebar-link-active{% endif %}">Turnos abiertos</a>
+    <a href="#" class="sidebar-link sidebar-link-disabled" aria-disabled="true">Mensajes</a>
+</nav>

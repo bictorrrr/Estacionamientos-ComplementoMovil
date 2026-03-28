@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block body_class %}login-wrapper{% endblock %}
+
+{% block content %}
+<div class="background-overlay"></div>
+<section class="ep-shell mobile-shell">
+    <div class="mobile-card-stack">
+        <article class="page-header">
+            <h1 class="brand-title">Control del estacionamiento</h1>
+            <p class="subtitle">Interfaz móvil con el estilo visual principal del sistema.</p>
+        </article>
+
+        <article class="login-card">
+            <h2 class="page-title">Iniciar sesión</h2>
+            <p class="page-copy">Acceso de encargado desde celular.</p>
+
+            {% if error %}
+                <p class="login-error">{{ error }}</p>
+            {% endif %}
+
+            <form method="post" class="login-form">
+                <div class="form-group">
+                    <label for="codigo">Código</label>
+                    <input class="topbar-code" id="codigo" type="number" name="codigo" placeholder="Ej. 1024" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input id="password" type="password" name="password" placeholder="Tu contraseña" required>
+                </div>
+
+                <button class="login-btn" type="submit">Entrar</button>
+            </form>
+        </article>
+    </div>
+</section>
+{% endblock %}

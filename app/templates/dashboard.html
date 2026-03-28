@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block body_class %}dashboard-container{% endblock %}
+
+{% block content %}
+<div class="background-overlay"></div>
+<section class="ep-shell mobile-shell mobile-dashboard">
+    <div class="dashboard-layout" id="dashboardLayout">
+        <aside class="dashboard-sidebar" id="dashboardSidebar">
+            {% include "partials/sidebar_nav.html" %}
+        </aside>
+
+        <div class="mobile-card-stack dashboard-main">
+            <header class="dashboard-topbar">
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Mostrar u ocultar menú lateral"
+                    aria-controls="dashboardSidebar"
+                    aria-expanded="true"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <a class="btn btn-secondary topbar-logout" href="/logout">Cerrar sesión</a>
+            </header>
+
+            <article class="content-card dashboard-content-card">
+                <div class="dashboard-card-header">
+                    <div>
+                        <h1 class="page-title">Autos estacionados</h1>
+                        <p class="page-copy">Consulta de placas y hora de entrada en tiempo real.</p>
+                    </div>
+                    <span class="cars-count">{{ autos|length }} activos</span>
+                </div>
+
+                {% if autos %}
+                    <div class="autos-scroll-shell autos-table-shell">
+                        <table class="autos-table" aria-label="Autos estacionados actualmente">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Placa</th>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Hora</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for auto in autos %}
+                                    <tr>
+                                        <td class="autos-col-plate plate">{{ auto.placa }}</td>
+                                        <td>{{ auto.fecha_entrada }}</td>
+                                        <td>{{ auto.hora_entrada }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <article class="info-box info-box-dashboard-empty">
+                        <p class="page-copy">No hay autos estacionados en este momento.</p>
+                    </article>
+                {% endif %}
+            </article>
+        </div>
+    </div>
+</section>
+
+{% include "partials/sidebar_toggle_script.html" %}
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block body_class %}dashboard-container{% endblock %}
+
+{% block content %}
+<div class="background-overlay"></div>
+<section class="ep-shell mobile-shell mobile-dashboard">
+    <div class="dashboard-layout" id="dashboardLayout">
+        <aside class="dashboard-sidebar" id="dashboardSidebar">
+            {% include "partials/sidebar_nav.html" %}
+        </aside>
+
+        <div class="mobile-card-stack dashboard-main">
+            <header class="dashboard-topbar">
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Mostrar u ocultar menú lateral"
+                    aria-controls="dashboardSidebar"
+                    aria-expanded="true"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <a class="btn btn-secondary topbar-logout" href="/logout">Cerrar sesión</a>
+            </header>
+
+            <article class="content-card dashboard-content-card">
+                <div class="dashboard-card-header">
+                    <div>
+                        <h1 class="page-title">Enviar mensaje</h1>
+                        <p class="page-copy">Turno #{{ turno_id }}</p>
+                    </div>
+                    <a href="/turnos/abiertos" class="btn btn-secondary">Volver</a>
+                </div>
+
+                <div id="feedback" style="display:none;" class="info-box" role="alert"></div>
+
+                <form id="mensajeForm" novalidate>
+                    <div class="form-group">
+                        <label for="contenido" class="form-label">Contenido del mensaje</label>
+                        <textarea
+                            id="contenido"
+                            name="contenido"
+                            class="form-input"
+                            rows="5"
+                            placeholder="Escribe el mensaje aquí..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Enviar</button>
+                </form>
+            </article>
+        </div>
+    </div>
+</section>
+
+{% include "partials/sidebar_toggle_script.html" %}
+
+<script>
+    document.getElementById("mensajeForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const contenido = document.getElementById("contenido").value.trim();
+        const feedback = document.getElementById("feedback");
+        const submitBtn = document.getElementById("submitBtn");
+
+        if (!contenido) {
+            feedback.textContent = "El contenido no puede estar vacío.";
+            feedback.className = "info-box info-box-dashboard-empty";
+            feedback.style.display = "block";
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Enviando...";
+
+        try {
+            const response = await fetch("/mensajes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    turno_id: {{ turno_id }},
+                    contenido: contenido
+                })
+            });
+
+            if (response.ok) {
+                feedback.textContent = "Mensaje enviado correctamente.";
+                feedback.className = "info-box";
+                feedback.style.display = "block";
+                document.getElementById("contenido").value = "";
+                setTimeout(() => { window.location.href = "/turnos/abiertos"; }, 1500);
+            } else {
+                const data = await response.json().catch(() => ({}));
+                feedback.textContent = data.detail || "Error al enviar el mensaje.";
+                feedback.className = "info-box info-box-dashboard-empty";
+                feedback.style.display = "block";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Enviar";
+            }
+        } catch {
+            feedback.textContent = "Error de conexión. Intenta de nuevo.";
+            feedback.className = "info-box info-box-dashboard-empty";
+            feedback.style.display = "block";
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Enviar";
+        }
+    });
+</script>
+{% endblock %}

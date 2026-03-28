@@ -1,0 +1,48 @@
+<script>
+    (function () {
+        var toggleButton = document.getElementById('menuToggle');
+        var closeButton = document.getElementById('sidebarClose');
+        var shell = document.getElementById('dashboardLayout');
+        var sidebarLinks = document.querySelectorAll('.sidebar-nav .sidebar-link');
+        var sidebarStateKey = 'dashboardSidebarHidden';
+
+        if (!toggleButton || !shell) {
+            return;
+        }
+
+        function setSidebarHidden(isHidden) {
+            shell.classList.toggle('sidebar-hidden', isHidden);
+            toggleButton.setAttribute('aria-expanded', String(!isHidden));
+            sessionStorage.setItem(sidebarStateKey, String(isHidden));
+        }
+
+        function hideSidebar() {
+            setSidebarHidden(true);
+        }
+
+        if (sessionStorage.getItem(sidebarStateKey) === 'true') {
+            setSidebarHidden(true);
+        }
+
+        toggleButton.addEventListener('click', function () {
+            var isHidden = shell.classList.toggle('sidebar-hidden');
+            toggleButton.setAttribute('aria-expanded', String(!isHidden));
+            sessionStorage.setItem(sidebarStateKey, String(isHidden));
+        });
+
+        if (closeButton) {
+            closeButton.addEventListener('click', function () {
+                hideSidebar();
+            });
+        }
+
+        sidebarLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (link.classList.contains('sidebar-link-disabled') || link.getAttribute('aria-disabled') === 'true') {
+                    return;
+                }
+                hideSidebar();
+            });
+        });
+    })();
+</script>

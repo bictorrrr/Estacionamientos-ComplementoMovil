@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block body_class %}dashboard-container{% endblock %}
+
+{% block content %}
+<div class="background-overlay"></div>
+<section class="ep-shell mobile-shell mobile-dashboard">
+    <div class="dashboard-layout" id="dashboardLayout">
+        <aside class="dashboard-sidebar" id="dashboardSidebar">
+            {% include "partials/sidebar_nav.html" %}
+        </aside>
+
+        <div class="mobile-card-stack dashboard-main">
+            <header class="dashboard-topbar">
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Mostrar u ocultar menú lateral"
+                    aria-controls="dashboardSidebar"
+                    aria-expanded="true"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <a class="btn btn-secondary topbar-logout" href="/logout">Cerrar sesión</a>
+            </header>
+
+            <article class="content-card dashboard-content-card">
+                <div class="dashboard-card-header">
+                    <div>
+                        <h1 class="page-title">Historial de mensajes</h1>
+                        <p class="page-copy">Turno #{{ turno_id }}</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
+                        <span class="cars-count">{{ pendientes }} pendientes</span>
+                        <span class="cars-count">{{ leidos }} leidos</span>
+                        <a href="/turnos/abiertos" class="btn btn-secondary">Volver</a>
+                    </div>
+                </div>
+
+                {% if mensajes %}
+                    <div class="list-cards autos-scroll-shell">
+                        {% for mensaje in mensajes %}
+                            {% set estado_actual = mensaje.estado or "pendiente" %}
+                            <article class="auto-card" id="mensaje-card-{{ mensaje.id }}">
+                                <div style="display: flex; justify-content: flex-end;">
+                                    <small class="page-copy" style="opacity: 0.95;">{{ mensaje.fecha_enviado }}</small>
+                                </div>
+
+                                <p class="auto-meta" style="margin-top: 0.75rem; white-space: pre-line; font-size: 1.05rem; line-height: 1.55;">{{ mensaje.contenido }}</p>
+
+                                <span
+                                    class="ep-badge {% if estado_actual == 'leido' %}ep-badge-success{% else %}ep-badge-amber{% endif %}"
+                                    style="margin-top: 0.8rem; display: flex; width: 100%; justify-content: center; padding: 0.65rem 1rem; font-size: 0.98rem; font-weight: 800; letter-spacing: 0.02em;"
+                                >
+                                    {{ "Marcado como leído" if estado_actual == "leido" else "Pendiente" }}
+                                </span>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <article class="info-box info-box-dashboard-empty">
+                        <p class="page-copy">No hay mensajes para este turno todavia.</p>
+                    </article>
+                {% endif %}
+            </article>
+        </div>
+    </div>
+</section>
+
+{% include "partials/sidebar_toggle_script.html" %}
+{% endblock %}
